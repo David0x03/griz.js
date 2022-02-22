@@ -1,0 +1,7 @@
+{
+	"clean": true,
+	"dts": true,
+	"entryPoints": ["src/index.ts"],
+	"minify": true,
+	"skipNodeModulesBundle": true
+}
