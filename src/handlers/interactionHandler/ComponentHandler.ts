@@ -3,8 +3,10 @@ import {
 	Message,
 	MessageComponentInteraction
 } from 'discord.js';
+import { ComponentEvent } from '../../modules';
 import { ButtonAction, SelectMenuAction } from '../../types/Components';
 import { MessageData } from '../../types/Message';
+import { Utils } from '../../utils';
 
 const componentCollectors = new Map<
 	string,
@@ -52,4 +54,17 @@ export function registerComponents(
 	});
 
 	componentCollectors.set(message.id, collector);
+}
+
+export async function handleComponentEvent(
+	interaction: MessageComponentInteraction,
+	componentEvents: ComponentEvent[]
+) {
+	componentEvents.forEach(async (comp) => {
+		const { customId } = comp.data;
+		const utils = await Utils.get(interaction.guildId);
+
+		if (interaction.customId.match(customId))
+			return comp.run(utils, interaction);
+	});
 }
