@@ -1,4 +1,4 @@
-import { Client, ClientOptions, Guild } from 'discord.js';
+import { Client, ClientOptions, Events, Guild } from 'discord.js';
 import {
 	CommandHandler,
 	ConditionHandler,
@@ -32,7 +32,7 @@ export class GrizClient extends Client {
 	constructor(override options: GrizClientOptions) {
 		super(options);
 
-		this.once('ready', async () => {
+		this.once(Events.ClientReady, async () => {
 			this.databaseHandler = await DatabaseHandler.setup(this);
 
 			Utils.client = this;

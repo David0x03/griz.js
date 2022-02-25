@@ -76,12 +76,14 @@ export function parseMsgData(msgOptions: GrizMessageOptions) {
 }
 
 export function parseMsgEditData(msgOptions: GrizMessageOptions) {
-	msgOptions.content ??= null;
-	msgOptions.embeds ??= [];
-	msgOptions.components ??= [];
-	msgOptions.files ??= [];
+	const parsedData = parseMsgData(msgOptions);
 
-	return parseMsgData(msgOptions);
+	parsedData.content ??= null;
+	parsedData.embeds ??= [];
+	parsedData.components ??= [];
+	parsedData.files ??= [];
+
+	return parsedData;
 }
 
 export function parseMsgUpdateData(
