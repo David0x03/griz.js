@@ -46,7 +46,7 @@ function parseSimpleOption(
 	optionData.name = option.name;
 	optionData.description = option.description;
 
-	if (optionData.required !== undefined) optionData.required = option.required;
+	if (option.required !== undefined) optionData.required = option.required;
 
 	if ('choices' in option && option.choices !== undefined)
 		optionData.choices = option.choices;
