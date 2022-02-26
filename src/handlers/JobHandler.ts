@@ -45,7 +45,7 @@ export class JobHandler extends BaseHandler {
 				.find()
 				.toArray();
 
-			dbJobs.forEach(async (data) => this.createDBJob(data));
+			dbJobs.forEach(async (data) => this.createDBJob(data, false));
 		});
 	}
 
@@ -57,10 +57,13 @@ export class JobHandler extends BaseHandler {
 	async schedule(name: string, date: number | Date, guild: string, data?: any) {
 		const _id = nanoid(10);
 		date = new Date(date);
-		this.createDBJob({ _id, name, date, guild, data });
+		this.createDBJob({ _id, name, date, guild, data }, true);
 	}
 
-	private async createDBJob({ _id, name, date, guild, data }: JobModel) {
+	private async createDBJob(
+		{ _id, name, date, guild, data }: JobModel,
+		createNewDBEntry: boolean
+	) {
 		const runJob = async () => {
 			const utils = await Utils.get(guild);
 			const jobData = await utils.db.get('jobs', _id);
@@ -72,9 +75,11 @@ export class JobHandler extends BaseHandler {
 
 		if (date.getTime() < Date.now()) return runJob();
 
-		await this.utils.db
-			.collection('jobs')
-			.insertOne({ _id, name, date, guild, data });
+		if (createNewDBEntry)
+			await this.utils.db
+				.collection('jobs')
+				.insertOne({ _id, name, date, guild, data });
+
 		this.createJob(date, runJob);
 	}
 
