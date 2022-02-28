@@ -144,10 +144,11 @@ export class Utils {
 		const messages: Array<Message> = [];
 		let batch: Collection<string, Message>;
 		do {
-			batch = await channel.messages.fetch({
-				limit: 100,
-				before: messages.at(-1)?.id
-			});
+			const lastId = messages.at(-1)?.id ?? channel.lastMessageId;
+
+			if (lastId)
+				batch = await channel.messages.fetch({ limit: 100, before: lastId });
+			else batch = await channel.messages.fetch({ limit: 100 });
 
 			if (!includePinned) batch = batch.filter((m) => !m.pinned);
 
