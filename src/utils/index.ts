@@ -144,7 +144,7 @@ export class Utils {
 		const messages: Array<Message> = [];
 		let batch: Collection<string, Message>;
 		do {
-			const lastId = messages.at(-1)?.id ?? channel.lastMessageId;
+			const lastId = messages.at(-1)?.id;
 
 			if (lastId)
 				batch = await channel.messages.fetch({ limit: 100, before: lastId });
