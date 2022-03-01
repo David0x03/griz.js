@@ -39,18 +39,16 @@ export function parseMsgData(msgOptions: GrizMessageOptions) {
 	// Stickers
 	if (msgOptions.stickers !== undefined) message.stickers = msgOptions.stickers;
 
-	// MessageMentions
-	message.allowedMentions = {
-		repliedUser: false,
-		...msgOptions.allowedMentions
-	};
-
 	// Reply
 	if (msgOptions.reply)
 		message.reply = {
 			messageReference: msgOptions.reply,
 			failIfNotExists: false
 		};
+
+	// MessageMentions
+	if (msgOptions.allowedMentions === undefined && message.reply !== undefined)
+		message.allowedMentions = { repliedUser: false };
 
 	// Ephemeral
 	if (msgOptions.ephemeral !== undefined)
