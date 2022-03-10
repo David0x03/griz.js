@@ -11,6 +11,7 @@ import {
 } from 'discord.js';
 import { GrizClient } from '../GrizClient';
 import { DatabaseUtils } from './DatabaseUtils';
+import { InteractionCollectorUtils } from './InteractionCollectorUtils';
 import { JobUtils } from './JobUtils';
 import { MessageUtils } from './MessageUtils';
 
@@ -26,6 +27,7 @@ export class Utils {
 	guildId?: string;
 	db: DatabaseUtils;
 	msg: MessageUtils;
+	col: InteractionCollectorUtils;
 	job: JobUtils;
 
 	constructor(guild?: Guild) {
@@ -34,6 +36,7 @@ export class Utils {
 		this.guildId = guild?.id;
 		this.db = new DatabaseUtils(this);
 		this.msg = new MessageUtils(this);
+		this.col = new InteractionCollectorUtils(this);
 		this.job = new JobUtils(this);
 	}
 
@@ -116,7 +119,7 @@ export class Utils {
 		return threads;
 	}
 
-	async getPrivateThreads(channel: HasThreadsChannel) {
+	async getArchivedThreads(channel: HasThreadsChannel) {
 		channel = await this.parseChannel<HasThreadsChannel>(channel);
 		if (!channel || !('threads' in channel)) return;
 

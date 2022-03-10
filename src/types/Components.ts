@@ -1,18 +1,16 @@
 import {
-	APIActionRowComponent,
-	APIButtonComponent,
-	APISelectMenuComponent
-} from 'discord-api-types/v10';
-import {
-	ButtonInteraction,
 	ButtonStyle,
 	EmojiIdentifierResolvable,
-	SelectMenuInteraction
+	TextInputStyle
 } from 'discord.js';
 
 export type MessageComponentOptions = ButtonOptions[] | [SelectMenuOptions];
 
-export type ActionRowData = APIActionRowComponent<ButtonData | SelectMenuData>;
+export interface ModalOptions {
+	title: string;
+	customId?: string;
+	components: TextInputOptions[];
+}
 
 export interface ButtonOptions {
 	label?: string;
@@ -21,39 +19,32 @@ export interface ButtonOptions {
 	emoji?: EmojiIdentifierResolvable;
 	url?: string;
 	disabled?: boolean;
-	onAction?: ButtonAction;
-}
-
-export type ButtonData = APIButtonComponent & {
-	onAction?: ButtonAction;
-};
-
-export interface ButtonAction {
-	(interaction: ButtonInteraction): any;
 }
 
 export interface SelectMenuOptions {
 	customId?: string;
-	placeholder?: string;
-	min?: number;
-	max?: number;
 	options: SelectMenuOptionOptions[];
+	placeholder?: string;
+	maxValues?: number;
+	minValues?: number;
 	disabled?: boolean;
-	onAction?: SelectMenuAction;
 }
 
 export interface SelectMenuOptionOptions {
-	default?: boolean;
-	description?: string;
-	emoji?: EmojiIdentifierResolvable;
 	label: string;
 	value: string;
+	description?: string;
+	emoji?: EmojiIdentifierResolvable;
+	default?: boolean;
 }
 
-export interface SelectMenuData extends APISelectMenuComponent {
-	onAction?: SelectMenuAction;
-}
-
-export interface SelectMenuAction {
-	(interaction: SelectMenuInteraction, values: string[]): any;
+export interface TextInputOptions {
+	label: string;
+	customId: string;
+	style?: TextInputStyle;
+	placeholder?: string;
+	value?: string;
+	minLength?: number;
+	maxLength?: number;
+	required?: boolean;
 }

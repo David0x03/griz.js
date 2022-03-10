@@ -10,17 +10,19 @@ import {
 	MessageComponentInteraction,
 	MessageOptions,
 	MessageResolvable,
+	ModalSubmitInteraction,
 	TextBasedChannelResolvable,
 	User,
 	Webhook,
 	WebhookMessageOptions
 } from 'discord.js';
 import { Stream } from 'stream';
-import { ActionRowData, MessageComponentOptions } from './Components';
+import { MessageComponentOptions } from './Components';
 
 export type Sendable =
 	| CommandInteraction
 	| MessageComponentInteraction
+	| ModalSubmitInteraction
 	| TextBasedChannelResolvable
 	| Message
 	| Webhook
@@ -30,16 +32,15 @@ export type Sendable =
 export type Editable =
 	| CommandInteraction
 	| MessageComponentInteraction
+	| ModalSubmitInteraction
 	| Message;
+
+export type Modalable = CommandInteraction | MessageComponentInteraction;
 
 export interface MessageData
 	extends MessageOptions,
 		Omit<InteractionReplyOptions, 'flags'>,
-		WebhookMessageOptions {
-	components?: ActionRowData[];
-	users?: string[];
-	ttl: number;
-}
+		WebhookMessageOptions {}
 
 export interface GrizMessageOptions extends EmbedOptions {
 	content?: string | null;
@@ -59,8 +60,6 @@ export interface GrizMessageOptions extends EmbedOptions {
 		avatar: ImageOptions;
 		channel: AnyChannel;
 	};
-	users?: string[];
-	ttl?: number;
 }
 
 export interface EmbedOptions {

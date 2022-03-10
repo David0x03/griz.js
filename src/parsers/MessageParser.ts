@@ -1,4 +1,3 @@
-import { APIEmbed } from 'discord-api-types/v10';
 import { Colors, Embed, Message } from 'discord.js';
 import {
 	EmbedOptions,
@@ -10,10 +9,7 @@ import {
 import { parseMessageComponents } from './ComponentParser';
 
 export function parseMsgData(msgOptions: GrizMessageOptions) {
-	const message: MessageData = {
-		fetchReply: true,
-		ttl: 300
-	};
+	const message: MessageData = { fetchReply: true };
 
 	// Content
 	if (msgOptions.content !== undefined) message.content = msgOptions.content;
@@ -64,12 +60,6 @@ export function parseMsgData(msgOptions: GrizMessageOptions) {
 		else if (typeof channel === 'string') message.threadId = channel;
 	}
 
-	// Users
-	if (msgOptions.users) message.users = msgOptions.users;
-
-	// TTL
-	if (msgOptions.ttl) message.ttl = msgOptions.ttl;
-
 	return message;
 }
 
@@ -94,7 +84,7 @@ export function parseMsgUpdateData(
 	else if (msgData.embeds.length == msg.embeds.length) {
 		msgData.embeds = msgData.embeds.map((embed, i) => ({
 			...msg.embeds[i].data,
-			...(embed as APIEmbed)
+			...embed
 		}));
 	}
 
@@ -138,7 +128,7 @@ function parseEmbed(embedOptions: EmbedOptions) {
 
 	embed.setColor(embedOptions.color ?? Colors.Blue);
 
-	if (embed.length > 0 || embed.image || embed.thumbnail) return embed.toJSON();
+	if (embed.length > 0 || embed.image || embed.thumbnail) return embed;
 }
 
 function parseImage(imageOptions: ImageOptions | undefined | null) {

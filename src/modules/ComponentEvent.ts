@@ -1,4 +1,7 @@
-import { Interaction } from 'discord.js';
+import {
+	MessageComponentInteraction,
+	ModalSubmitInteraction
+} from 'discord.js';
 import { Utils } from '../utils';
 
 interface ComponentEventOptions {
@@ -16,5 +19,9 @@ export abstract class ComponentEvent {
 		this.data = options;
 	}
 
-	run(utils: Utils, interaction: Interaction & { customId: string }): any {}
+	run(
+		utils: Utils,
+		interaction: MessageComponentInteraction | ModalSubmitInteraction,
+		args?: any
+	): any {}
 }

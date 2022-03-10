@@ -4,10 +4,22 @@ import {
 	Message,
 	MessageEditOptions
 } from 'discord.js';
-import { registerComponents } from '../handlers/interactionHandler/ComponentHandler';
-import { parseMsgData, parseMsgEditData, parseMsgUpdateData } from '../parsers';
-import { Editable, GrizMessageOptions, Sendable } from '../types/Message';
+import {
+	parseModal,
+	parseMsgData,
+	parseMsgEditData,
+	parseMsgUpdateData
+} from '../parsers';
+import {
+	Editable,
+	GrizMessageOptions,
+	Modalable,
+	ModalOptions,
+	Sendable
+} from '../types';
 import { Utils } from '../utils';
+
+type MsgResp = Promise<Message | undefined>;
 
 export class MessageUtils {
 	constructor(private utils: Utils) {}
@@ -19,51 +31,41 @@ export class MessageUtils {
 			else return;
 		}
 
-		let message;
 		const parsedMsgData = parseMsgData(msgOptions);
 
 		if (sendable instanceof Message) sendable = sendable.channel;
 
 		if ('reply' in sendable) {
 			if (sendable.deferred && !sendable.replied)
-				message = await sendable.editReply(parsedMsgData);
-			else if (!sendable.replied)
-				message = await sendable.reply(
+				return sendable.editReply(parsedMsgData) as MsgResp;
+
+			if (!sendable.replied)
+				return sendable.reply(
 					parsedMsgData as InteractionReplyOptions
-				);
-			else if (sendable.replied)
-				message = await sendable.followUp(
+				) as MsgResp;
+
+			if (sendable.replied)
+				return sendable.followUp(
 					parsedMsgData as InteractionReplyOptions
-				);
-		} else if ('send' in sendable) {
-			const promise = sendable.send(parsedMsgData).catch(() => undefined);
-			message = (await promise) as Message | undefined;
+				) as MsgResp;
 		}
 
-		if (message instanceof Message) {
-			registerComponents(message, parsedMsgData);
-			return message;
-		}
+		if ('send' in sendable)
+			return sendable.send(parsedMsgData).catch(() => undefined) as MsgResp;
 	}
 
 	async edit(editable: Editable, msgOptions: GrizMessageOptions) {
-		let message;
 		const parsedMsgData = parseMsgEditData(msgOptions);
 
-		if ('editReply' in editable) {
-			if (editable.replied) message = await editable.editReply(parsedMsgData);
-		} else if ('edit' in editable) {
-			editable.edit(parsedMsgData as MessageEditOptions);
-		}
+		if ('editReply' in editable && editable.replied)
+			return editable.editReply(parsedMsgData) as MsgResp;
 
-		if (message instanceof Message) {
-			registerComponents(message, parsedMsgData);
-			return message;
-		}
+		if ('edit' in editable)
+			editable.edit(parsedMsgData as MessageEditOptions) as MsgResp;
 	}
 
 	async update(editable: Editable, msgOptions: GrizMessageOptions) {
-		let message, parsedMsgData;
+		let parsedMsgData;
 
 		if ('message' in editable)
 			parsedMsgData = parseMsgUpdateData(
@@ -77,19 +79,20 @@ export class MessageUtils {
 			);
 		else parsedMsgData = parseMsgUpdateData(msgOptions, editable);
 
-		if ('editReply' in editable) {
-			if (editable.replied) message = await editable.editReply(parsedMsgData);
-			else if ('update' in editable)
-				message = await editable.update(
-					parsedMsgData as InteractionUpdateOptions
-				);
-		} else if ('edit' in editable) {
-			editable.edit(parsedMsgData as MessageEditOptions);
-		}
+		if ('editReply' in editable && editable.replied)
+			return editable.editReply(parsedMsgData) as MsgResp;
 
-		if (message instanceof Message) {
-			registerComponents(message, parsedMsgData);
-			return message;
-		}
+		if ('update' in editable)
+			return editable.update(
+				parsedMsgData as InteractionUpdateOptions
+			) as MsgResp;
+
+		if ('edit' in editable)
+			return editable.edit(parsedMsgData as MessageEditOptions) as MsgResp;
+	}
+
+	async showModal(modalable: Modalable, modalOptions: ModalOptions) {
+		const parsedModal = parseModal(modalable, modalOptions);
+		return modalable.showModal(parsedModal);
 	}
 }

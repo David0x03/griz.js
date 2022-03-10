@@ -1,10 +1,11 @@
 import { Client, ClientOptions, Events, Guild } from 'discord.js';
 import {
 	CommandHandler,
+	CommandInteractionHandler,
+	ComponentEventHandler,
 	ConditionHandler,
 	DatabaseHandler,
 	EventHandler,
-	InteractionHandler,
 	JobHandler
 } from './handlers';
 import { Utils } from './utils';
@@ -24,7 +25,8 @@ export class GrizClient extends Client {
 
 	databaseHandler!: DatabaseHandler;
 	commandHandler!: CommandHandler;
-	interactionHandler!: InteractionHandler;
+	commandInteractionHandler!: CommandInteractionHandler;
+	componentEventHandler!: ComponentEventHandler;
 	conditionHandler!: ConditionHandler;
 	jobHandler!: JobHandler;
 	eventHandler!: EventHandler;
@@ -44,7 +46,8 @@ export class GrizClient extends Client {
 			}
 
 			this.commandHandler = await CommandHandler.setup(this);
-			this.interactionHandler = new InteractionHandler(this);
+			this.commandInteractionHandler = new CommandInteractionHandler(this);
+			this.componentEventHandler = new ComponentEventHandler(this);
 
 			this.conditionHandler = new ConditionHandler(this);
 			this.jobHandler = new JobHandler(this);
