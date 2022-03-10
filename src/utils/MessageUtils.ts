@@ -2,6 +2,7 @@ import {
 	InteractionReplyOptions,
 	InteractionUpdateOptions,
 	Message,
+	MessageComponentInteraction,
 	MessageEditOptions
 } from 'discord.js';
 import {
@@ -67,7 +68,7 @@ export class MessageUtils {
 	async update(editable: Editable, msgOptions: GrizMessageOptions) {
 		let parsedMsgData;
 
-		if ('message' in editable)
+		if (editable instanceof MessageComponentInteraction)
 			parsedMsgData = parseMsgUpdateData(
 				msgOptions,
 				editable.message as Message

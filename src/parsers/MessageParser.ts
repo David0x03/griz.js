@@ -82,10 +82,9 @@ export function parseMsgUpdateData(
 
 	if (!msgData.embeds) msgData.embeds = msg.embeds;
 	else if (msgData.embeds.length == msg.embeds.length) {
-		msgData.embeds = msgData.embeds.map((embed, i) => ({
-			...msg.embeds[i].data,
-			...embed
-		}));
+		msgData.embeds = msgData.embeds.map(
+			(embed, i) => new Embed({ ...msg.embeds[i].data, ...embed.data })
+		);
 	}
 
 	return msgData;

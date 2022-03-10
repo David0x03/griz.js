@@ -2,6 +2,7 @@ import {
 	AnyChannel,
 	BufferResolvable,
 	CommandInteraction,
+	Embed,
 	EmbedFieldData,
 	Guild,
 	GuildMember,
@@ -38,9 +39,11 @@ export type Editable =
 export type Modalable = CommandInteraction | MessageComponentInteraction;
 
 export interface MessageData
-	extends MessageOptions,
-		Omit<InteractionReplyOptions, 'flags'>,
-		WebhookMessageOptions {}
+	extends Omit<MessageOptions, 'embeds'>,
+		Omit<InteractionReplyOptions, 'embeds' | 'flags'>,
+		Omit<WebhookMessageOptions, 'embeds'> {
+	embeds?: Embed[];
+}
 
 export interface GrizMessageOptions extends EmbedOptions {
 	content?: string | null;
