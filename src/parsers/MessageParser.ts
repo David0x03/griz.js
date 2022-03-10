@@ -81,7 +81,7 @@ export function parseMsgUpdateData(
 	const msgData = parseMsgData(msgOptions);
 
 	if (!msgData.embeds) msgData.embeds = msg.embeds;
-	else if (msgData.embeds.length == msg.embeds.length) {
+	else if (msgData.embeds.length === msg.embeds.length) {
 		msgData.embeds = msgData.embeds.map(
 			(embed, i) => new Embed({ ...msg.embeds[i].data, ...embed.data })
 		);
@@ -127,7 +127,8 @@ function parseEmbed(embedOptions: EmbedOptions) {
 
 	embed.setColor(embedOptions.color ?? Colors.Blue);
 
-	if (embed.length > 0 || embed.image || embed.thumbnail) return embed;
+	if (embed.length > 0 || embed.fields || embed.image || embed.thumbnail)
+		return embed;
 }
 
 function parseImage(imageOptions: ImageOptions | undefined | null) {
