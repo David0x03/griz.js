@@ -68,14 +68,14 @@ function parseMessageActionRow(actionRowOptions: MessageComponentOptions) {
 function parseButton(buttonOptions: ButtonOptions) {
 	const button = new ButtonComponent();
 
-	if (buttonOptions.label) button.setLabel(buttonOptions.label);
+	if (buttonOptions.label !== undefined) button.setLabel(buttonOptions.label);
 
-	if (buttonOptions.emoji) {
+	if (buttonOptions.emoji !== undefined) {
 		const emoji = parseEmoji(buttonOptions.emoji);
 		if (emoji) button.setEmoji(emoji);
 	}
 
-	if (buttonOptions.url) {
+	if (buttonOptions.url !== undefined) {
 		button.setStyle(ButtonStyle.Link);
 		button.setURL(buttonOptions.url);
 		return button;
@@ -84,7 +84,8 @@ function parseButton(buttonOptions: ButtonOptions) {
 	button.setStyle(buttonOptions.style || ButtonStyle.Primary);
 	button.setCustomId(buttonOptions.customId ?? nanoid(10));
 
-	if (buttonOptions.disabled) button.setDisabled(buttonOptions.disabled);
+	if (buttonOptions.disabled !== undefined)
+		button.setDisabled(buttonOptions.disabled);
 
 	return button;
 }
@@ -95,7 +96,7 @@ function parseSelectMenu(selectMenuOptions: SelectMenuOptions) {
 	selectMenu.setCustomId(selectMenuOptions.customId ?? nanoid(10));
 	selectMenu.setOptions(...parseSelectMenuOptions(selectMenuOptions.options));
 
-	if (selectMenuOptions.placeholder)
+	if (selectMenuOptions.placeholder !== undefined)
 		selectMenu.setPlaceholder(selectMenuOptions.placeholder);
 
 	selectMenu.setMinValues(selectMenuOptions.minValues ?? 1);
@@ -103,7 +104,7 @@ function parseSelectMenu(selectMenuOptions: SelectMenuOptions) {
 		selectMenuOptions.maxValues ?? selectMenuOptions.minValues ?? 1
 	);
 
-	if (selectMenuOptions.disabled)
+	if (selectMenuOptions.disabled !== undefined)
 		selectMenu.setDisabled(selectMenuOptions.disabled);
 
 	return selectMenu;
@@ -118,14 +119,15 @@ function parseSelectMenuOptions(
 		option.setLabel(options.label);
 		option.setValue(options.value);
 
-		if (options.description) option.setDescription(options.description);
+		if (options.description !== undefined)
+			option.setDescription(options.description);
 
-		if (options.emoji) {
+		if (options.emoji !== undefined) {
 			const emoji = parseEmoji(options.emoji);
 			if (emoji) option.setEmoji(emoji);
 		}
 
-		if (options.default) option.setDefault(options.default);
+		if (options.default !== undefined) option.setDefault(options.default);
 
 		return option;
 	});
@@ -138,17 +140,18 @@ function parseTextInput(textInputOptions: TextInputOptions) {
 	textInput.setCustomId(textInputOptions.customId);
 	textInput.setStyle(textInputOptions.style ?? TextInputStyle.Short);
 
-	if (textInputOptions.placeholder)
+	if (textInputOptions.placeholder !== undefined)
 		textInput.setPlaceholder(textInputOptions.placeholder);
 
-	if (textInputOptions.value) textInput.setValue(textInputOptions.value);
+	if (textInputOptions.value !== undefined)
+		textInput.setValue(textInputOptions.value);
 
-	if (textInputOptions.minLength)
+	if (textInputOptions.minLength !== undefined)
 		textInput.setMinLength(textInputOptions.minLength);
-	if (textInputOptions.maxLength)
+	if (textInputOptions.maxLength !== undefined)
 		textInput.setMaxLength(textInputOptions.maxLength);
 
-	if (textInputOptions.required)
+	if (textInputOptions.required !== undefined)
 		textInput.setRequired(textInputOptions.required);
 
 	return textInput;
