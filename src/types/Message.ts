@@ -2,7 +2,7 @@ import {
 	AnyChannel,
 	BufferResolvable,
 	CommandInteraction,
-	Embed,
+	EmbedBuilder,
 	EmbedFieldData,
 	Guild,
 	GuildMember,
@@ -42,7 +42,7 @@ export interface MessageData
 	extends Omit<MessageOptions, 'embeds'>,
 		Omit<InteractionReplyOptions, 'embeds' | 'flags'>,
 		Omit<WebhookMessageOptions, 'embeds'> {
-	embeds?: Embed[];
+	embeds?: EmbedBuilder[];
 }
 
 export interface GrizMessageOptions extends EmbedOptions {
@@ -59,9 +59,9 @@ export interface GrizMessageOptions extends EmbedOptions {
 	reply?: MessageResolvable;
 	ephemeral?: boolean;
 	webhook?: {
-		username: string;
-		avatar: ImageOptions;
-		channel: AnyChannel;
+		username?: string;
+		avatar?: ImageOptions;
+		channel?: AnyChannel;
 	};
 }
 

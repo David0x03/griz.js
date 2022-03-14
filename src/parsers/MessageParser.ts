@@ -1,4 +1,4 @@
-import { Colors, Embed, Message } from 'discord.js';
+import { Colors, EmbedBuilder, Message } from 'discord.js';
 import {
 	EmbedOptions,
 	FooterOptions,
@@ -80,18 +80,15 @@ export function parseMsgUpdateData(
 ) {
 	const msgData = parseMsgData(msgOptions);
 
-	if (!msgData.embeds) msgData.embeds = msg.embeds;
-	else if (msgData.embeds.length === msg.embeds.length) {
-		msgData.embeds = msgData.embeds.map(
-			(embed, i) => new Embed({ ...msg.embeds[i].data, ...embed.data })
-		);
-	}
+	msgData.embeds = msgData.embeds?.map(
+		(embed, i) => new EmbedBuilder({ ...msg.embeds[i].data, ...embed.data })
+	);
 
 	return msgData;
 }
 
 function parseEmbed(embedOptions: EmbedOptions) {
-	const embed = new Embed();
+	const embed = new EmbedBuilder();
 
 	if (embedOptions.title !== undefined) embed.setTitle(embedOptions.title);
 
@@ -127,7 +124,14 @@ function parseEmbed(embedOptions: EmbedOptions) {
 
 	embed.setColor(embedOptions.color ?? Colors.Blue);
 
-	if (embed.length > 0 || embed.fields || embed.image || embed.thumbnail)
+	if (
+		embed.data.title ||
+		embed.data.author ||
+		embed.data.description ||
+		embed.data.fields ||
+		embed.data.image ||
+		embed.data.thumbnail
+	)
 		return embed;
 }
 

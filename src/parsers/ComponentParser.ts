@@ -1,14 +1,14 @@
 import { APIMessageComponentEmoji } from 'discord-api-types/v10';
 import {
-	ActionRow,
-	ButtonComponent,
+	ActionRowBuilder,
+	ButtonBuilder,
 	ButtonStyle,
 	EmojiIdentifierResolvable,
 	Interaction,
-	Modal,
-	SelectMenuComponent,
-	SelectMenuOption,
-	TextInputComponent,
+	ModalBuilder,
+	SelectMenuBuilder,
+	SelectMenuOptionBuilder,
+	TextInputBuilder,
 	TextInputStyle,
 	Util
 } from 'discord.js';
@@ -39,13 +39,13 @@ export function parseModal(
 	interaction: Interaction,
 	modalOptions: ModalOptions
 ) {
-	const modal = new Modal();
+	const modal = new ModalBuilder();
 
 	modal.setTitle(modalOptions.title);
 	modal.setCustomId(modalOptions.customId ?? interaction.id);
 
 	modalOptions.components.forEach((component) => {
-		const actionRow = new ActionRow<TextInputComponent>();
+		const actionRow = new ActionRowBuilder<TextInputBuilder>();
 		actionRow.setComponents(parseTextInput(component as any));
 		modal.addComponents(actionRow);
 	});
@@ -54,7 +54,7 @@ export function parseModal(
 }
 
 function parseMessageActionRow(actionRowOptions: MessageComponentOptions) {
-	const actionRow = new ActionRow();
+	const actionRow = new ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>();
 
 	actionRowOptions.forEach((component) => {
 		if ('options' in component)
@@ -66,7 +66,7 @@ function parseMessageActionRow(actionRowOptions: MessageComponentOptions) {
 }
 
 function parseButton(buttonOptions: ButtonOptions) {
-	const button = new ButtonComponent();
+	const button = new ButtonBuilder();
 
 	if (buttonOptions.label !== undefined) button.setLabel(buttonOptions.label);
 
@@ -91,7 +91,7 @@ function parseButton(buttonOptions: ButtonOptions) {
 }
 
 function parseSelectMenu(selectMenuOptions: SelectMenuOptions) {
-	const selectMenu = new SelectMenuComponent();
+	const selectMenu = new SelectMenuBuilder();
 
 	selectMenu.setCustomId(selectMenuOptions.customId ?? nanoid(10));
 	selectMenu.setOptions(...parseSelectMenuOptions(selectMenuOptions.options));
@@ -114,7 +114,7 @@ function parseSelectMenuOptions(
 	selectMenuOptionOptions: SelectMenuOptionOptions[]
 ) {
 	return selectMenuOptionOptions.map((options) => {
-		const option = new SelectMenuOption();
+		const option = new SelectMenuOptionBuilder();
 
 		option.setLabel(options.label);
 		option.setValue(options.value);
@@ -134,7 +134,7 @@ function parseSelectMenuOptions(
 }
 
 function parseTextInput(textInputOptions: TextInputOptions) {
-	const textInput = new TextInputComponent();
+	const textInput = new TextInputBuilder();
 
 	textInput.setLabel(textInputOptions.label);
 	textInput.setCustomId(textInputOptions.customId);
