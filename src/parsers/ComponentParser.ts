@@ -1,16 +1,13 @@
-import { APIMessageComponentEmoji } from 'discord-api-types/v10';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-	EmojiIdentifierResolvable,
 	Interaction,
 	ModalBuilder,
 	SelectMenuBuilder,
 	SelectMenuOptionBuilder,
 	TextInputBuilder,
-	TextInputStyle,
-	Util
+	TextInputStyle
 } from 'discord.js';
 import { nanoid } from 'nanoid';
 import {
@@ -69,11 +66,7 @@ function parseButton(buttonOptions: ButtonOptions) {
 	const button = new ButtonBuilder();
 
 	if (buttonOptions.label !== undefined) button.setLabel(buttonOptions.label);
-
-	if (buttonOptions.emoji !== undefined) {
-		const emoji = parseEmoji(buttonOptions.emoji);
-		if (emoji) button.setEmoji(emoji);
-	}
+	if (buttonOptions.emoji !== undefined) button.setEmoji(buttonOptions.emoji);
 
 	if (buttonOptions.url !== undefined) {
 		button.setStyle(ButtonStyle.Link);
@@ -122,10 +115,7 @@ function parseSelectMenuOptions(
 		if (options.description !== undefined)
 			option.setDescription(options.description);
 
-		if (options.emoji !== undefined) {
-			const emoji = parseEmoji(options.emoji);
-			if (emoji) option.setEmoji(emoji);
-		}
+		if (options.emoji !== undefined) option.setEmoji(options.emoji);
 
 		if (options.default !== undefined) option.setDefault(options.default);
 
@@ -155,8 +145,4 @@ function parseTextInput(textInputOptions: TextInputOptions) {
 		textInput.setRequired(textInputOptions.required);
 
 	return textInput;
-}
-
-function parseEmoji(emoji: EmojiIdentifierResolvable | undefined) {
-	if (emoji) return Util.resolvePartialEmoji(emoji) as APIMessageComponentEmoji;
 }

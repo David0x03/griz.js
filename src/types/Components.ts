@@ -1,5 +1,6 @@
 import {
 	ButtonStyle,
+	ComponentEmojiResolvable,
 	EmojiIdentifierResolvable,
 	TextInputStyle
 } from 'discord.js';
@@ -16,7 +17,7 @@ export interface ButtonOptions {
 	label?: string;
 	customId?: string;
 	style?: ButtonStyle;
-	emoji?: EmojiIdentifierResolvable;
+	emoji?: ComponentEmojiResolvable;
 	url?: string;
 	disabled?: boolean;
 }
@@ -34,7 +35,7 @@ export interface SelectMenuOptionOptions {
 	label: string;
 	value: string;
 	description?: string;
-	emoji?: EmojiIdentifierResolvable;
+	emoji?: ComponentEmojiResolvable;
 	default?: boolean;
 }
 
