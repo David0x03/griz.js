@@ -21,7 +21,7 @@ import {
 } from '../types';
 import { Utils } from '../utils';
 
-type MsgResponse = Promise<Message | InteractionResponse | undefined>;
+type MsgResponse = Promise<Message | undefined>;
 
 export class MessageUtils {
 	constructor(private utils: Utils) {}
@@ -44,7 +44,7 @@ export class MessageUtils {
 			if (!sendable.replied)
 				return sendable.reply(
 					parsedMsgData as InteractionReplyOptions
-				) as MsgResponse;
+				) as any as MsgResponse;
 
 			if (sendable.replied)
 				return sendable.followUp(
@@ -87,7 +87,7 @@ export class MessageUtils {
 		if ('update' in editable)
 			return editable.update(
 				parsedMsgData as InteractionUpdateOptions
-			) as MsgResponse;
+			) as any as MsgResponse;
 
 		if ('edit' in editable)
 			return editable.edit(parsedMsgData as MessageEditOptions) as MsgResponse;
