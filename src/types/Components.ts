@@ -1,7 +1,6 @@
 import {
 	ButtonStyle,
 	ComponentEmojiResolvable,
-	EmojiIdentifierResolvable,
 	TextInputStyle
 } from 'discord.js';
 

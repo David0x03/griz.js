@@ -1,5 +1,6 @@
 import {
 	InteractionReplyOptions,
+	InteractionResponse,
 	InteractionUpdateOptions,
 	Message,
 	MessageComponentInteraction,
@@ -20,7 +21,7 @@ import {
 } from '../types';
 import { Utils } from '../utils';
 
-type MsgResp = Promise<Message | undefined>;
+type MsgResponse = Promise<Message | InteractionResponse | undefined>;
 
 export class MessageUtils {
 	constructor(private utils: Utils) {}
@@ -38,31 +39,31 @@ export class MessageUtils {
 
 		if ('reply' in sendable) {
 			if (sendable.deferred && !sendable.replied)
-				return sendable.editReply(parsedMsgData) as MsgResp;
+				return sendable.editReply(parsedMsgData) as MsgResponse;
 
 			if (!sendable.replied)
 				return sendable.reply(
 					parsedMsgData as InteractionReplyOptions
-				) as MsgResp;
+				) as MsgResponse;
 
 			if (sendable.replied)
 				return sendable.followUp(
 					parsedMsgData as InteractionReplyOptions
-				) as MsgResp;
+				) as MsgResponse;
 		}
 
 		if ('send' in sendable)
-			return sendable.send(parsedMsgData).catch(() => undefined) as MsgResp;
+			return sendable.send(parsedMsgData).catch(() => undefined) as MsgResponse;
 	}
 
 	async edit(editable: Editable, msgOptions: GrizMessageOptions) {
 		const parsedMsgData = parseMsgEditData(msgOptions);
 
 		if ('editReply' in editable && editable.replied)
-			return editable.editReply(parsedMsgData) as MsgResp;
+			return editable.editReply(parsedMsgData) as MsgResponse;
 
 		if ('edit' in editable)
-			editable.edit(parsedMsgData as MessageEditOptions) as MsgResp;
+			editable.edit(parsedMsgData as MessageEditOptions) as MsgResponse;
 	}
 
 	async update(editable: Editable, msgOptions: GrizMessageOptions) {
@@ -81,15 +82,15 @@ export class MessageUtils {
 		else parsedMsgData = parseMsgUpdateData(msgOptions, editable);
 
 		if ('editReply' in editable && editable.replied)
-			return editable.editReply(parsedMsgData) as MsgResp;
+			return editable.editReply(parsedMsgData) as MsgResponse;
 
 		if ('update' in editable)
 			return editable.update(
 				parsedMsgData as InteractionUpdateOptions
-			) as MsgResp;
+			) as MsgResponse;
 
 		if ('edit' in editable)
-			return editable.edit(parsedMsgData as MessageEditOptions) as MsgResp;
+			return editable.edit(parsedMsgData as MessageEditOptions) as MsgResponse;
 	}
 
 	async showModal(modalable: Modalable, modalOptions: ModalOptions) {

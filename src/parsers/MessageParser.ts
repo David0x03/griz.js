@@ -110,8 +110,7 @@ function parseEmbed(embedOptions: EmbedOptions) {
 	if (embedOptions.thumbnail !== undefined)
 		embed.setThumbnail(parseImage(embedOptions.thumbnail) ?? null);
 
-	if (embedOptions.fields !== undefined)
-		embed.setFields(...embedOptions.fields);
+	if (embedOptions.fields !== undefined) embed.setFields(embedOptions.fields);
 
 	if (embedOptions.image !== undefined)
 		embed.setImage(parseImage(embedOptions.image) ?? null);

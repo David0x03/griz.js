@@ -43,8 +43,8 @@ export function parseModal(
 
 	modalOptions.components.forEach((component) => {
 		const actionRow = new ActionRowBuilder<TextInputBuilder>();
-		actionRow.setComponents(parseTextInput(component as any));
-		modal.addComponents(actionRow);
+		actionRow.setComponents([parseTextInput(component as any)]);
+		modal.addComponents([actionRow]);
 	});
 
 	return modal;
@@ -53,11 +53,12 @@ export function parseModal(
 function parseMessageActionRow(actionRowOptions: MessageComponentOptions) {
 	const actionRow = new ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>();
 
-	actionRowOptions.forEach((component) => {
-		if ('options' in component)
-			actionRow.addComponents(parseSelectMenu(component));
-		else actionRow.addComponents(parseButton(component));
-	});
+	actionRow.setComponents(
+		actionRowOptions.map((component) => {
+			if ('options' in component) return parseSelectMenu(component);
+			else return parseButton(component);
+		})
+	);
 
 	return actionRow;
 }
@@ -87,7 +88,7 @@ function parseSelectMenu(selectMenuOptions: SelectMenuOptions) {
 	const selectMenu = new SelectMenuBuilder();
 
 	selectMenu.setCustomId(selectMenuOptions.customId ?? nanoid(10));
-	selectMenu.setOptions(...parseSelectMenuOptions(selectMenuOptions.options));
+	selectMenu.setOptions(parseSelectMenuOptions(selectMenuOptions.options));
 
 	if (selectMenuOptions.placeholder !== undefined)
 		selectMenu.setPlaceholder(selectMenuOptions.placeholder);
@@ -119,7 +120,7 @@ function parseSelectMenuOptions(
 
 		if (options.default !== undefined) option.setDefault(options.default);
 
-		return option;
+		return option.toJSON();
 	});
 }
 

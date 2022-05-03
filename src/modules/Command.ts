@@ -1,5 +1,5 @@
 import {
-	ApplicationCommandOptionChoice,
+	ApplicationCommandOptionChoiceData,
 	AutocompleteInteraction,
 	Colors,
 	CommandInteraction
@@ -24,8 +24,8 @@ export abstract class Command {
 	onAutocomplete(
 		utils: Utils,
 		interaction: AutocompleteInteraction,
-		choice: ApplicationCommandOptionChoice
-	): ApplicationCommandOptionChoice[] | any {}
+		choice: ApplicationCommandOptionChoiceData
+	): ApplicationCommandOptionChoiceData[] | any {}
 
 	onCooldown(utils: Utils, interaction: CommandInteraction, endsAt: Date): any {
 		const formattedTime = `<t:${(endsAt.getTime() / 1000) | 0}:R>`;
