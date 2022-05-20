@@ -1,10 +1,10 @@
 import {
 	ButtonComponentData,
 	ButtonStyle,
-	ComponentType,
 	ModalData,
 	SelectMenuComponentData,
-	TextInputComponentData
+	TextInputComponentData,
+	TextInputStyle
 } from 'discord.js';
 
 export type MessageComponentData = ButtonData[] | [SelectMenuData];
@@ -30,6 +30,7 @@ export interface SelectMenuData
 }
 
 export interface TextInputData
-	extends Omit<TextInputComponentData, 'customId'> {
+	extends Omit<TextInputComponentData, 'customId' | 'style'> {
 	customId?: string;
+	style?: TextInputStyle;
 }
