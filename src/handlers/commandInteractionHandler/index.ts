@@ -1,5 +1,6 @@
 import {
 	ApplicationCommandOptionType,
+	ApplicationCommandSubGroupData,
 	ApplicationCommandType,
 	AutocompleteInteraction,
 	CommandInteraction,
@@ -8,7 +9,6 @@ import {
 import { GrizClient } from '../../GrizClient';
 import { Command } from '../../modules';
 import { parseCommandArgs } from '../../parsers';
-import { SubCommandData, SubCommandGroupData } from '../../types/Command';
 import { Utils } from '../../utils';
 import { BaseHandler } from '../BaseHandler';
 import { isOnCooldown } from './cooldownUtils';
@@ -68,7 +68,7 @@ export class CommandInteractionHandler extends BaseHandler {
 	private getCommand(
 		interaction: CommandInteraction | AutocompleteInteraction,
 		command: Command
-	) {
+	): Command {
 		if (
 			(interaction.isChatInputCommand() || interaction.isAutocomplete()) &&
 			command.data.type === ApplicationCommandType.ChatInput
@@ -81,14 +81,15 @@ export class CommandInteractionHandler extends BaseHandler {
 					({ type, name }) =>
 						type === ApplicationCommandOptionType.SubcommandGroup &&
 						name === groupName
-				) as SubCommandGroupData;
+				) as ApplicationCommandSubGroupData;
 
 				const subCmd = group.options!.find(
 					({ type, name }) =>
 						type === ApplicationCommandOptionType.Subcommand &&
 						name === subCmdName
-				) as SubCommandData;
-				return subCmd.command;
+				);
+
+				return (subCmd as any)?.command || command;
 			}
 
 			if (subCmdName) {
@@ -96,8 +97,8 @@ export class CommandInteractionHandler extends BaseHandler {
 					({ type, name }) =>
 						type === ApplicationCommandOptionType.Subcommand &&
 						name === subCmdName
-				) as SubCommandData;
-				return subCmd.command;
+				);
+				return (subCmd as any)?.command || command;
 			}
 		}
 		return command;

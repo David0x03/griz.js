@@ -1,50 +1,33 @@
 import {
+	ButtonComponentData,
 	ButtonStyle,
-	ComponentEmojiResolvable,
-	TextInputStyle
+	ComponentType,
+	ModalData,
+	SelectMenuComponentData,
+	TextInputComponentData
 } from 'discord.js';
 
-export type MessageComponentOptions = ButtonOptions[] | [SelectMenuOptions];
+export type MessageComponentData = ButtonData[] | [SelectMenuData];
 
-export interface ModalOptions {
-	title: string;
+export interface GrizModalData extends Omit<ModalData, 'customId'> {
 	customId?: string;
-	components: TextInputOptions[];
 }
 
-export interface ButtonOptions {
-	label?: string;
+export type ButtonData = Omit<
+	ButtonComponentData,
+	'customId' | 'style' | 'url'
+> & {
 	customId?: string;
 	style?: ButtonStyle;
-	emoji?: ComponentEmojiResolvable;
 	url?: string;
-	disabled?: boolean;
-}
+};
 
-export interface SelectMenuOptions {
+export interface SelectMenuData
+	extends Omit<SelectMenuComponentData, 'customId'> {
 	customId?: string;
-	options: SelectMenuOptionOptions[];
-	placeholder?: string;
-	maxValues?: number;
-	minValues?: number;
-	disabled?: boolean;
 }
 
-export interface SelectMenuOptionOptions {
-	label: string;
-	value: string;
-	description?: string;
-	emoji?: ComponentEmojiResolvable;
-	default?: boolean;
-}
-
-export interface TextInputOptions {
-	label: string;
-	customId: string;
-	style?: TextInputStyle;
-	placeholder?: string;
-	value?: string;
-	minLength?: number;
-	maxLength?: number;
-	required?: boolean;
+export interface TextInputData
+	extends Omit<TextInputComponentData, 'customId'> {
+	customId?: string;
 }

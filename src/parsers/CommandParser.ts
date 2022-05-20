@@ -1,60 +1,49 @@
-import { ApplicationCommandType } from 'discord.js';
 import {
-	BaseCommandData,
-	BaseCommandOptions,
-	CommandOptions,
-	ContextMenuCommandData,
-	ContextMenuCommandOptions,
-	SlashCommandData,
-	SlashCommandOptions
-} from '../types/Command';
+	ApplicationCommandData,
+	ApplicationCommandType,
+	ChatInputApplicationCommandData,
+	MessageApplicationCommandData,
+	UserApplicationCommandData
+} from 'discord.js';
+import { CommandData } from '../types';
 import { parseCommandOptions } from './CommandOptionParser';
 
-export function parseCommand(options: CommandOptions) {
-	if (options.type === ApplicationCommandType.ChatInput)
-		return parseSlashCommand(options);
-	else return parseContextMenuCommand(options);
+export function parseCommand(options: CommandData) {
+	switch (options.type) {
+		case ApplicationCommandType.ChatInput:
+			return parseSlashCommand(options);
+		case ApplicationCommandType.User:
+		case ApplicationCommandType.Message:
+			return parseContextMenuCommand(options);
+		default:
+			return parseBaseCommand(options);
+	}
 }
 
-function parseBaseCommand(options: BaseCommandOptions) {
-	const baseCommand: BaseCommandData = {
-		name: options.name
-	};
-
-	if (options.cooldown !== undefined) {
-		const cooldownData = {
+function parseBaseCommand(options: CommandData) {
+	if (options.cooldown)
+		options.cooldown = {
 			usages: options.cooldown.usages ?? 1,
 			interval: options.cooldown.interval * 1000
 		};
-		baseCommand.cooldown = cooldownData;
-	}
 
-	if (options.allowDMs !== undefined) baseCommand.allowDMs = options.allowDMs;
-
-	if (options.devGuildOnly !== undefined)
-		baseCommand.devGuildOnly = options.devGuildOnly;
-
-	return baseCommand;
+	return options;
 }
 
-function parseSlashCommand(options: SlashCommandOptions) {
-	const slashCommand: SlashCommandData = {
+function parseSlashCommand(options: ChatInputApplicationCommandData) {
+	const slashCommand = {
 		...parseBaseCommand(options),
-		type: ApplicationCommandType.ChatInput,
-		description: options.description
+		description: options.description,
+		options: parseCommandOptions(options.options ?? [])
 	};
-
-	const parsedOptions = parseCommandOptions(options.options ?? []);
-	slashCommand.options = parsedOptions;
 
 	return slashCommand;
 }
 
-function parseContextMenuCommand(options: ContextMenuCommandOptions) {
-	const contextMenuCommand: ContextMenuCommandData = {
-		...parseBaseCommand(options),
-		type: options.type
-	};
+function parseContextMenuCommand(
+	options: UserApplicationCommandData | MessageApplicationCommandData
+) {
+	const contextMenuCommand = { ...parseBaseCommand(options) };
 
 	return contextMenuCommand;
 }

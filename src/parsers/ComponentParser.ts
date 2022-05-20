@@ -2,148 +2,82 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	ComponentType,
 	Interaction,
 	ModalBuilder,
 	SelectMenuBuilder,
-	SelectMenuOptionBuilder,
 	TextInputBuilder,
 	TextInputStyle
 } from 'discord.js';
 import { nanoid } from 'nanoid';
 import {
-	ButtonOptions,
-	MessageComponentOptions,
-	ModalOptions,
-	SelectMenuOptionOptions,
-	SelectMenuOptions,
-	TextInputOptions
-} from '../types/Components';
+	ButtonData,
+	GrizModalData,
+	MessageComponentData,
+	SelectMenuData,
+	TextInputData
+} from '../types';
 
 export function parseMessageComponents(
-	componentOptions: MessageComponentOptions | MessageComponentOptions[]
+	componentOptions: MessageComponentData | MessageComponentData[]
 ) {
 	if (componentOptions.length === 0) return [];
 
 	if (Array.isArray(componentOptions[0]))
 		return componentOptions.map((actionRow) =>
-			parseMessageActionRow(actionRow as MessageComponentOptions)
+			parseMessageActionRow(actionRow as MessageComponentData)
 		);
-	else
-		return [parseMessageActionRow(componentOptions as MessageComponentOptions)];
+	else return [parseMessageActionRow(componentOptions as MessageComponentData)];
 }
 
-export function parseModal(
-	interaction: Interaction,
-	modalOptions: ModalOptions
-) {
-	const modal = new ModalBuilder();
+export function parseModal(interaction: Interaction, modalData: GrizModalData) {
+	modalData.customId ??= modalData.customId ?? interaction.id;
 
-	modal.setTitle(modalOptions.title);
-	modal.setCustomId(modalOptions.customId ?? interaction.id);
+	modalData.components = modalData.components.map((component) => {
+		const actionRowData: any = {
+			type: ComponentType.ActionRow,
+			components: [parseTextInput(component as any)]
+		};
 
-	modalOptions.components.forEach((component) => {
-		const actionRow = new ActionRowBuilder<TextInputBuilder>();
-		actionRow.setComponents([parseTextInput(component as any)]);
-		modal.addComponents([actionRow]);
+		return new ActionRowBuilder<TextInputBuilder>(actionRowData) as any;
 	});
 
-	return modal;
+	return new ModalBuilder(modalData as any);
 }
 
-function parseMessageActionRow(actionRowOptions: MessageComponentOptions) {
-	const actionRow = new ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>();
-
-	actionRow.setComponents(
-		actionRowOptions.map((component) => {
-			if ('options' in component) return parseSelectMenu(component);
-			else return parseButton(component);
+function parseMessageActionRow(actionRowOptions: MessageComponentData) {
+	const actionRowData: any = {
+		type: ComponentType.ActionRow,
+		components: actionRowOptions.map((component) => {
+			switch (component.type) {
+				case ComponentType.Button:
+					return parseButton(component);
+				case ComponentType.SelectMenu:
+					return parseSelectMenu(component as any);
+			}
 		})
-	);
+	};
 
-	return actionRow;
+	return new ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>(actionRowData);
 }
 
-function parseButton(buttonOptions: ButtonOptions) {
-	const button = new ButtonBuilder();
+function parseButton(buttonData: ButtonData) {
+	buttonData.customId ??= nanoid(10);
+	buttonData.style ??= ButtonStyle.Primary;
 
-	if (buttonOptions.label !== undefined) button.setLabel(buttonOptions.label);
-	if (buttonOptions.emoji !== undefined) button.setEmoji(buttonOptions.emoji);
+	if (buttonData.url !== undefined) buttonData.style = ButtonStyle.Link;
 
-	if (buttonOptions.url !== undefined) {
-		button.setStyle(ButtonStyle.Link);
-		button.setURL(buttonOptions.url);
-		return button;
-	}
-
-	button.setStyle(buttonOptions.style || ButtonStyle.Primary);
-	button.setCustomId(buttonOptions.customId ?? nanoid(10));
-
-	if (buttonOptions.disabled !== undefined)
-		button.setDisabled(buttonOptions.disabled);
-
-	return button;
+	return buttonData;
 }
 
-function parseSelectMenu(selectMenuOptions: SelectMenuOptions) {
-	const selectMenu = new SelectMenuBuilder();
-
-	selectMenu.setCustomId(selectMenuOptions.customId ?? nanoid(10));
-	selectMenu.setOptions(parseSelectMenuOptions(selectMenuOptions.options));
-
-	if (selectMenuOptions.placeholder !== undefined)
-		selectMenu.setPlaceholder(selectMenuOptions.placeholder);
-
-	selectMenu.setMinValues(selectMenuOptions.minValues ?? 1);
-	selectMenu.setMaxValues(
-		selectMenuOptions.maxValues ?? selectMenuOptions.minValues ?? 1
-	);
-
-	if (selectMenuOptions.disabled !== undefined)
-		selectMenu.setDisabled(selectMenuOptions.disabled);
-
-	return selectMenu;
+function parseSelectMenu(selectMenuOptions: SelectMenuData) {
+	selectMenuOptions.customId ??= nanoid(10);
+	return new SelectMenuBuilder(selectMenuOptions);
 }
 
-function parseSelectMenuOptions(
-	selectMenuOptionOptions: SelectMenuOptionOptions[]
-) {
-	return selectMenuOptionOptions.map((options) => {
-		const option = new SelectMenuOptionBuilder();
+function parseTextInput(textInputOptions: TextInputData) {
+	textInputOptions.customId ??= nanoid(10);
+	textInputOptions.style ??= TextInputStyle.Short;
 
-		option.setLabel(options.label);
-		option.setValue(options.value);
-
-		if (options.description !== undefined)
-			option.setDescription(options.description);
-
-		if (options.emoji !== undefined) option.setEmoji(options.emoji);
-
-		if (options.default !== undefined) option.setDefault(options.default);
-
-		return option.toJSON();
-	});
-}
-
-function parseTextInput(textInputOptions: TextInputOptions) {
-	const textInput = new TextInputBuilder();
-
-	textInput.setLabel(textInputOptions.label);
-	textInput.setCustomId(textInputOptions.customId);
-	textInput.setStyle(textInputOptions.style ?? TextInputStyle.Short);
-
-	if (textInputOptions.placeholder !== undefined)
-		textInput.setPlaceholder(textInputOptions.placeholder);
-
-	if (textInputOptions.value !== undefined)
-		textInput.setValue(textInputOptions.value);
-
-	if (textInputOptions.minLength !== undefined)
-		textInput.setMinLength(textInputOptions.minLength);
-	if (textInputOptions.maxLength !== undefined)
-		textInput.setMaxLength(textInputOptions.maxLength);
-
-	if (textInputOptions.required !== undefined)
-		textInput.setRequired(textInputOptions.required);
-
-	return textInput;
+	return new TextInputBuilder(textInputOptions);
 }

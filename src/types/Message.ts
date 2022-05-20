@@ -18,7 +18,7 @@ import {
 	WebhookMessageOptions
 } from 'discord.js';
 import { Stream } from 'stream';
-import { MessageComponentOptions } from './Components';
+import { MessageComponentData } from './Components';
 
 export type Sendable =
 	| CommandInteraction
@@ -48,7 +48,7 @@ export interface MessageData
 export interface GrizMessageOptions extends EmbedOptions {
 	content?: string | null;
 	embeds?: EmbedOptions[];
-	components?: MessageComponentOptions | MessageComponentOptions[];
+	components?: MessageComponentData | MessageComponentData[];
 	files?: {
 		name: string;
 		file: BufferResolvable | Stream;

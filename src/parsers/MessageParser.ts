@@ -128,8 +128,8 @@ function parseEmbed(embedOptions: EmbedOptions) {
 		embed.data.author ||
 		embed.data.description ||
 		embed.data.fields ||
-		embed.data.image ||
-		embed.data.thumbnail
+		embed.data.thumbnail ||
+		embed.data.image
 	)
 		return embed;
 }

@@ -5,13 +5,13 @@ import {
 	CommandInteraction
 } from 'discord.js';
 import { parseCommand } from '../parsers';
-import { CommandData, CommandOptions } from '../types/Command';
+import { CommandData } from '../types';
 import { Utils } from '../utils';
 
 export abstract class Command {
 	readonly data: CommandData;
 
-	constructor(options: CommandOptions) {
+	constructor(options: CommandData) {
 		this.data = parseCommand(options);
 	}
 

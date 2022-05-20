@@ -51,9 +51,7 @@ export class CommandHandler extends BaseHandler {
 				.catch((e) => (console.error(e), undefined));
 
 		appCommands?.forEach((command) => {
-			const cmd = commands.find(({ data }) =>
-				command.equals(data as ApplicationCommandData)
-			);
+			const cmd = commands.find(({ data }) => command.equals(data));
 			if (cmd) this.commands.set(command.id, cmd);
 		});
 	}

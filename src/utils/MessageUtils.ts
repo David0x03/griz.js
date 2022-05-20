@@ -1,6 +1,5 @@
 import {
 	InteractionReplyOptions,
-	InteractionResponse,
 	InteractionUpdateOptions,
 	Message,
 	MessageComponentInteraction,
@@ -15,8 +14,8 @@ import {
 import {
 	Editable,
 	GrizMessageOptions,
+	GrizModalData,
 	Modalable,
-	ModalOptions,
 	Sendable
 } from '../types';
 import { Utils } from '../utils';
@@ -93,7 +92,7 @@ export class MessageUtils {
 			return editable.edit(parsedMsgData as MessageEditOptions) as MsgResponse;
 	}
 
-	async showModal(modalable: Modalable, modalOptions: ModalOptions) {
+	async showModal(modalable: Modalable, modalOptions: GrizModalData) {
 		const parsedModal = parseModal(modalable, modalOptions);
 		return modalable.showModal(parsedModal);
 	}
