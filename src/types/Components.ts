@@ -9,8 +9,10 @@ import {
 
 export type MessageComponentData = ButtonData[] | [SelectMenuData];
 
-export interface GrizModalData extends Omit<ModalData, 'customId'> {
+export interface GrizModalData
+	extends Omit<ModalData, 'customId' | 'components'> {
 	customId?: string;
+	components: [TextInputData];
 }
 
 export type ButtonData = Omit<
