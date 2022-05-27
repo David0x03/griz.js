@@ -62,10 +62,12 @@ function parseMessageActionRow(actionRowOptions: MessageComponentData) {
 }
 
 function parseButton(buttonData: ButtonData) {
-	buttonData.customId ??= nanoid(10);
-	buttonData.style ??= ButtonStyle.Primary;
-
-	if (buttonData.url !== undefined) buttonData.style = ButtonStyle.Link;
+	if (buttonData.url !== undefined) {
+		buttonData.style = ButtonStyle.Link;
+	} else {
+		buttonData.customId ??= nanoid(10);
+		buttonData.style ??= ButtonStyle.Primary;
+	}
 
 	return buttonData;
 }
