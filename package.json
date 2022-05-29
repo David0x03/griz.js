@@ -8,7 +8,7 @@
 		"dist"
 	],
 	"scripts": {
-		"prepare": "tsup"
+		"prepare": "tsc"
 	},
 	"repository": {
 		"type": "git",
@@ -30,8 +30,7 @@
 		"@types/cron": "^1.7.3",
 		"@types/glob": "^7.2.0",
 		"@types/node": "^17.0.18",
-		"discord.js": "^14.0.0-dev.1649808570-01a423d",
-		"tsup": "^5.11.13",
+		"discord.js": "^14.0.0-dev.1653480262-68d5169",
 		"typescript": "^4.5.5"
 	}
 }

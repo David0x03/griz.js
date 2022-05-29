@@ -6,8 +6,9 @@
 		"rootDir": "src",
 		"outDir": "dist",
 
-		"importHelpers": true
+		"importHelpers": true,
+		"resolveJsonModule": true
 	},
 	"include": ["src/"],
-	"exclude": ["node_modules", "dist"]
+	"exclude": ["node_modules", "dist", "src/test"]
 }
